@@ -208,3 +208,12 @@ html.scroll-locked {
     transform-origin: bottom;
   }
 }
+
+/* Seções abaixo da dobra: o navegador só renderiza quando chegam perto da tela.
+   Acelera o primeiro carregamento (o hero tem 280svh, então estas ficam bem abaixo). */
+section#projetos,
+section#sobre,
+section#contato {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

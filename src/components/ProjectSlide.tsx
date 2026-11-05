@@ -41,7 +41,8 @@ export function ProjectSlide({
           coverFocus={project.coverFocus}
           playing={playing && active}
           onPlay={onPlay}
-          priority={index === 0}
+          // o slide 1 fica abaixo da dobra (o hero tem 280svh): carregamento preguiçoso também
+          priority={false}
         />
         <div>
           <ul className="flex flex-wrap gap-2" aria-label="Funções">

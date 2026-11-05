@@ -20,20 +20,29 @@ function onScrollStop(done: () => void): void {
 }
 
 /**
- * Rola até a seção e atualiza o hash sem pular a página.
- * Se algo mudar de altura durante a rolagem suave (ex.: troca de fonte, imagem carregando),
- * corrige a posição ao final, sem animação.
+ * Garante que a seção terminou no lugar certo. As seções abaixo da dobra usam
+ * `content-visibility: auto` (altura estimada até serem renderizadas) e o Safari não tem
+ * "scroll anchoring": quando uma seção acima renderiza e muda de altura, o destino se desloca.
+ * Corrige sem animação, quadro a quadro, até estabilizar (no máximo `tries` vezes).
  */
+export function settleOnSection(el: HTMLElement, tries = 6): void {
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+      if (Math.abs(el.getBoundingClientRect().top - margin) <= 2) return;
+      el.scrollIntoView({ behavior: 'instant' });
+      if (tries > 1) settleOnSection(el, tries - 1);
+    }),
+  );
+}
+
+/** Rola até a seção (suave, se permitido) e atualiza o hash sem pular a página. */
 export function scrollToSection(id: string): void {
   const el = document.getElementById(id);
   if (!el) return;
   el.scrollIntoView(); // suavidade vem do CSS (desligada com prefers-reduced-motion)
   history.replaceState(null, '', `#${id}`);
-
-  onScrollStop(() => {
-    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-    if (Math.abs(el.getBoundingClientRect().top - margin) > 2) el.scrollIntoView({ behavior: 'instant' });
-  });
+  onScrollStop(() => settleOnSection(el));
 }
 
 /** onClick para links âncora internos: mantém o `href` (funciona sem JS e com Ctrl+clique). */
