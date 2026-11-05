@@ -1,0 +1,37 @@
+/* Paleta derivada da marca: dourado #D5A75A sobre grafite #171717.
+   Espelho em src/lib/theme.ts (testado quanto a contraste). */
+:root {
+  --bg: #0e0e0e;
+  --surface: #171717;
+  --surface-2: #1f1f1f;
+  --line: #2e2b26;
+  --gold: #d5a75a;
+  --gold-light: #e6c27f;
+  --gold-deep: #a8803a;
+  --text: #f5f0e6;
+  --text-muted: #b5afa3;
+  --on-gold: #171717;
+
+  --header-h: 4.25rem;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-deep: var(--gold-deep);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-on-gold: var(--on-gold);
+
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.75rem, 1.4rem + 6vw, 7rem);
+  --text-title: clamp(2rem, 1.2rem + 3.4vw, 4.25rem);
+  --text-lead: clamp(1.0625rem, 0.98rem + 0.4vw, 1.3125rem);
+}

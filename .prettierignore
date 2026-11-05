@@ -1,0 +1,8 @@
+dist
+coverage
+assets-originais
+public
+.claude
+pnpm-lock.yaml
+src/data/imagens.generated.ts
+*.generated.ts

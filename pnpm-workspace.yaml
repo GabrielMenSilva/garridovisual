@@ -1,3 +1,4 @@
-﻿onlyBuiltDependencies:
+onlyBuiltDependencies:
   - esbuild
   - sharp
+  - ffmpeg-static

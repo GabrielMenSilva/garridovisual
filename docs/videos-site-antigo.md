@@ -37,4 +37,3 @@ Não foram baixados. Cada URL abaixo é um arquivo MP4 hospedado no Wix. Os víd
 ## projeto-6 (https://eduardogarridoguil.wixsite.com/my-site/pagina-de-projeto-6)
 
 1. https://video.wixstatic.com/video/f6fff7_f87445334c394f1eba058bc00339c7a9/1080p/mp4/file.mp4
-

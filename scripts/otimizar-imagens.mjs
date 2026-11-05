@@ -29,7 +29,11 @@ const USADAS = [
   'juliana-marcio-galeria-15-vertical.png',
 ];
 
-const existe = (p) => access(p).then(() => true, () => false);
+const existe = (p) =>
+  access(p).then(
+    () => true,
+    () => false,
+  );
 await mkdir(SAIDA, { recursive: true });
 await mkdir('src/data', { recursive: true });
 
@@ -48,30 +52,37 @@ for (const arquivo of USADAS) {
   const img = sharp(origem).rotate();
   const info = await img.metadata();
   const larguras = LARGURAS.filter((w) => w <= info.width);
-  if (!larguras.length || larguras.at(-1) < Math.min(info.width, 1600)) larguras.push(Math.min(info.width, 1600));
+  if (!larguras.length || larguras.at(-1) < Math.min(info.width, 1600))
+    larguras.push(Math.min(info.width, 1600));
 
   for (const w of larguras) {
-    for (const [ext, opcoes] of [['avif', { quality: 55, effort: 4 }], ['webp', { quality: 78 }]]) {
+    for (const [ext, opcoes] of [
+      ['avif', { quality: 55, effort: 4 }],
+      ['webp', { quality: 78 }],
+    ]) {
       const destino = join(SAIDA, `${base}-${w}.${ext}`);
-      if (await existe(destino)) { pulados++; continue; }
-      await sharp(origem).rotate().resize({ width: w, withoutEnlargement: true })[ext](opcoes).toFile(destino);
+      if (await existe(destino)) {
+        pulados++;
+        continue;
+      }
+      await sharp(origem)
+        .rotate()
+        .resize({ width: w, withoutEnlargement: true })
+        [ext](opcoes)
+        .toFile(destino);
       gerados++;
     }
   }
 
-  const blur = await sharp(origem)
-    .rotate()
-    .resize({ width: 16 })
-    .blur(1)
-    .webp({ quality: 25 })
-    .toBuffer();
+  const blur = await sharp(origem).rotate().resize({ width: 16 }).blur(1).webp({ quality: 25 }).toBuffer();
   meta[base] = {
     width: info.width,
     height: info.height,
     widths: larguras,
     blur: `data:image/webp;base64,${blur.toString('base64')}`,
   };
-  if (meta[base].blur.length > 1400) console.warn(`aviso: blur de ${base} com ${meta[base].blur.length} bytes`);
+  if (meta[base].blur.length > 1400)
+    console.warn(`aviso: blur de ${base} com ${meta[base].blur.length} bytes`);
   console.log(`ok ${arquivo} → ${larguras.join(', ')}`);
 }
 

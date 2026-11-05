@@ -6,14 +6,13 @@
 // (passe --sem-marca para não sobrescrever o SVG).
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
-import { mkdir, writeFile, readFile, access } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const OURO = '#D5A75A';
 const GRAFITE = '#171717';
 const semMarca = process.argv.includes('--sem-marca');
 
-const existe = (p) => access(p).then(() => true, () => false);
 await mkdir('src/assets', { recursive: true });
 await mkdir('public', { recursive: true });
 
@@ -21,7 +20,12 @@ await mkdir('public', { recursive: true });
 function espiral() {
   const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
   // espiral quadrada girada 45°: cada ponto novo fica a 13% do caminho entre dois anteriores
-  const s = [[50, 3], [97, 50], [50, 97], [3, 50]];
+  const s = [
+    [50, 3],
+    [97, 50],
+    [50, 97],
+    [3, 50],
+  ];
   for (let k = 0; k < 52; k++) s.push(lerp(s[k], s[k + 1], 0.13));
   return s.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join('');
 }
@@ -32,7 +36,10 @@ const marca = (cor, extra = '') =>
 if (!semMarca) {
   await writeFile(
     'src/assets/logo-mark.svg',
-    marca('currentColor', 'role="img" aria-hidden="true"').replace('<svg ', '<!-- TODO(garrido): marca provisória; trocar pela logo real --><svg '),
+    marca('currentColor', 'role="img" aria-hidden="true"').replace(
+      '<svg ',
+      '<!-- TODO(garrido): marca provisória; trocar pela logo real --><svg ',
+    ),
   );
 }
 

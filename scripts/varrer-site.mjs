@@ -29,16 +29,31 @@ for (const pagina of PAGINAS) {
         const t = setInterval(() => {
           window.scrollBy(0, 600);
           y += 600;
-          if (y >= document.body.scrollHeight + 600) { clearInterval(t); ok(); }
+          if (y >= document.body.scrollHeight + 600) {
+            clearInterval(t);
+            ok();
+          }
         }, 250);
       });
     });
     await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
     const dom = await page.evaluate(() => {
-      const abs = (u) => { try { return new URL(u, location.href).href; } catch { return u; } };
-      const imgs = [...document.querySelectorAll('img')].map((i) => ({ src: abs(i.currentSrc || i.src), alt: i.alt }));
+      const abs = (u) => {
+        try {
+          return new URL(u, location.href).href;
+        } catch {
+          return u;
+        }
+      };
+      const imgs = [...document.querySelectorAll('img')].map((i) => ({
+        src: abs(i.currentSrc || i.src),
+        alt: i.alt,
+      }));
       const sources = [...document.querySelectorAll('source')].map((s) => abs(s.src || s.srcset));
-      const videos = [...document.querySelectorAll('video')].map((v) => ({ src: abs(v.currentSrc || v.src), poster: v.poster }));
+      const videos = [...document.querySelectorAll('video')].map((v) => ({
+        src: abs(v.currentSrc || v.src),
+        poster: v.poster,
+      }));
       const iframes = [...document.querySelectorAll('iframe')].map((f) => abs(f.src));
       const bgs = [...document.querySelectorAll('*')]
         .map((el) => getComputedStyle(el).backgroundImage)
@@ -48,7 +63,9 @@ for (const pagina of PAGINAS) {
       return { imgs, sources, videos, iframes, bgs, texto };
     });
     resultado[pagina.nome] = { url: pagina.url, ...dom, redeVideo: [...rede] };
-    console.log(`ok ${pagina.nome}: ${dom.imgs.length} img, ${dom.videos.length} video, ${dom.iframes.length} iframe, ${rede.size} rede-video`);
+    console.log(
+      `ok ${pagina.nome}: ${dom.imgs.length} img, ${dom.videos.length} video, ${dom.iframes.length} iframe, ${rede.size} rede-video`,
+    );
   } catch (e) {
     resultado[pagina.nome] = { url: pagina.url, erro: String(e) };
     console.error(`falhou ${pagina.nome}: ${e}`);
