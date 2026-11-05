@@ -157,4 +157,13 @@ const rawProjects = [
   },
 ] satisfies z.input<typeof projectSchema>[];
 
-export const projects: readonly Project[] = z.array(projectSchema).min(1).parse(rawProjects);
+const parsed = z.array(projectSchema).min(1).parse(rawProjects);
+
+/**
+ * Só no build de testes (`vite build --mode e2e`): liga vídeos fictícios nos dois primeiros projetos
+ * para testar o player. Em produção `import.meta.env.MODE` é 'production' e este ramo é removido do bundle.
+ */
+export const projects: readonly Project[] =
+  import.meta.env.MODE === 'e2e'
+    ? parsed.map((p, i) => (i < 2 ? { ...p, video: { type: 'youtube' as const, id: `e2eFixture${i}` } } : p))
+    : parsed;

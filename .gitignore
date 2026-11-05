@@ -21,3 +21,4 @@ assets-originais/*
 
 # Skills do Claude Code (≈50 MB); cada pessoa instala as suas
 .claude/
+dist-e2e/

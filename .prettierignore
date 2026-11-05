@@ -6,3 +6,6 @@ public
 pnpm-lock.yaml
 src/data/imagens.generated.ts
 *.generated.ts
+dist-e2e
+test-results
+playwright-report
