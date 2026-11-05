@@ -1,0 +1,23 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.lighthouseci/
+lighthouse-*.json
+lighthouse-*.html
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# Imagens originais (grandes, baixadas pelo script `pnpm assets:download`).
+# Só o manifest e a varredura vão para o Git.
+assets-originais/*
+!assets-originais/manifest.json
+!assets-originais/varredura.json
+!assets-originais/.gitkeep
+
+# Skills do Claude Code (≈50 MB); cada pessoa instala as suas
+.claude/
