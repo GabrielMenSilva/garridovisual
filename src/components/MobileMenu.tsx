@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { contact } from '../data/contact';
 import { sections } from '../data/site';
 import { handleAnchorClick } from '../lib/nav';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { CloseIcon } from './Icons';
 import { Logo } from './Logo';
@@ -16,6 +17,7 @@ interface MobileMenuProps {
 export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
   const ref = useRef<HTMLDialogElement>(null);
   useScrollLock(open);
+  useFocusTrap(ref, open);
 
   useEffect(() => {
     const dialog = ref.current;

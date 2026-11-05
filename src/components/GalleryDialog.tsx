@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { GalleryItem, Project } from '../data/projects';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { ArrowIcon, CloseIcon } from './Icons';
 import { Picture } from './Picture';
@@ -16,6 +17,7 @@ export function GalleryDialog({ project, onClose }: GalleryDialogProps) {
   const [current, setCurrent] = useState<number | null>(null);
   const [playingVideo, setPlayingVideo] = useState(false);
   useScrollLock(true);
+  useFocusTrap(ref, true);
 
   // sem mídia extra: a galeria mostra a capa e o vídeo principal
   const items = useMemo<GalleryItem[]>(() => {

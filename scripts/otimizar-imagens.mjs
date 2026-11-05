@@ -65,10 +65,8 @@ for (const arquivo of USADAS) {
         pulados++;
         continue;
       }
-      await sharp(origem)
-        .rotate()
-        .resize({ width: w, withoutEnlargement: true })
-        [ext](opcoes)
+      const redimensionada = sharp(origem).rotate().resize({ width: w, withoutEnlargement: true });
+      await (ext === 'avif' ? redimensionada.avif(opcoes) : redimensionada.webp(opcoes))
         .toFile(destino);
       gerados++;
     }

@@ -18,15 +18,17 @@ function ContactCard({ href, label, title, detail, icon }: CardProps) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={label}
-      className="group flex items-center gap-6 border border-line bg-surface p-6 transition-colors hover:border-gold hover:bg-surface-2 sm:p-8"
+      className="group flex min-w-0 items-center gap-4 border border-line bg-surface p-5 transition-colors hover:border-gold hover:bg-surface-2 sm:gap-6 sm:p-8"
     >
-      <span className="flex size-16 shrink-0 items-center justify-center border border-gold-deep text-gold transition-colors group-hover:border-gold group-hover:bg-gold group-hover:text-on-gold">
+      <span className="flex size-14 shrink-0 sm:size-16 items-center justify-center border border-gold-deep text-gold transition-colors group-hover:border-gold group-hover:bg-gold group-hover:text-on-gold">
         {icon}
       </span>
-      <span>
-        <span className="block font-display text-2xl font-extrabold text-ink sm:text-3xl">{title}</span>
+      <span className="min-w-0">
+        <span className="block font-display text-xl font-extrabold text-ink min-[400px]:text-2xl sm:text-3xl">
+          {title}
+        </span>
         <span className="mt-1 block text-muted">{detail}</span>
+        <span className="sr-only"> ({label}, abre em nova aba)</span>
       </span>
     </a>
   );
