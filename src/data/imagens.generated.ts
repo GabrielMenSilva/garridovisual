@@ -11,6 +11,7 @@ export const imagens = {
     "width": 3840,
     "height": 2160,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -22,6 +23,7 @@ export const imagens = {
     "width": 722,
     "height": 1283,
     "widths": [
+      240,
       480,
       722
     ],
@@ -31,6 +33,7 @@ export const imagens = {
     "width": 939,
     "height": 976,
     "widths": [
+      240,
       480,
       800,
       939
@@ -41,6 +44,7 @@ export const imagens = {
     "width": 728,
     "height": 486,
     "widths": [
+      240,
       480,
       728
     ],
@@ -50,6 +54,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -61,6 +66,7 @@ export const imagens = {
     "width": 1080,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1080
@@ -71,6 +77,7 @@ export const imagens = {
     "width": 864,
     "height": 717,
     "widths": [
+      240,
       480,
       800,
       864
@@ -81,6 +88,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -92,6 +100,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -103,6 +112,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -114,6 +124,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -125,6 +136,7 @@ export const imagens = {
     "width": 1920,
     "height": 1080,
     "widths": [
+      240,
       480,
       800,
       1200,
@@ -136,6 +148,7 @@ export const imagens = {
     "width": 1080,
     "height": 1920,
     "widths": [
+      240,
       480,
       800,
       1080
@@ -146,6 +159,7 @@ export const imagens = {
     "width": 1080,
     "height": 1920,
     "widths": [
+      240,
       480,
       800,
       1080
@@ -156,6 +170,7 @@ export const imagens = {
     "width": 1080,
     "height": 1920,
     "widths": [
+      240,
       480,
       800,
       1080

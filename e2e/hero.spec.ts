@@ -28,6 +28,8 @@ test.describe('hero com vídeo no scroll', () => {
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState)).toBeGreaterThanOrEqual(2);
     const duration = await video.evaluate((v: HTMLVideoElement) => v.duration);
     expect(duration).toBeGreaterThan(1);
+    // o vídeo aparece por cima do poster (mesmo se carregou antes da hidratação)
+    await expect(video).toHaveCSS('opacity', '1');
 
     const scrollTo = (fraction: number) =>
       page.evaluate((f) => {
@@ -84,16 +86,20 @@ test.describe('hero com movimento reduzido', () => {
   });
 });
 
-test.describe('hero sem JavaScript', () => {
+test.describe('sem JavaScript (HTML pré-renderizado)', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('mostra o texto e os botões de contato', async ({ page }) => {
+  test('o conteúdo está no HTML: hero, projetos, sobre e contato', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: 'GarridoVisual' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /WhatsApp/ })).toHaveAttribute(
+    await expect(page.locator('#home img').first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Ver projetos' }).first()).toHaveAttribute(
       'href',
-      /wa\.me\/5544991697273/,
+      '#projetos',
     );
-    await expect(page.getByRole('link', { name: /Instagram/ })).toBeVisible();
+    await expect(page.locator('main h2')).toHaveText(['Projetos', 'Sobre', 'Contato']);
+    await expect(page.locator('#contato a[href^="https://wa.me/5544991697273"]')).toHaveCount(1);
+    await expect(page.locator('#contato a[href="https://www.instagram.com/garridovisual/"]')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveCount(1);
   });
 });

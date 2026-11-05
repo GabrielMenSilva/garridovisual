@@ -34,6 +34,18 @@ export function Hero() {
     };
   }, []);
 
+  // O HTML vem pré-renderizado: o vídeo pode ter carregado (ou falhado) antes da hidratação,
+  // quando o React ainda não ouvia `loadeddata`/`error`. Confere o estado atual ao montar.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const id = requestAnimationFrame(() => {
+      if (video.error) setFailed(true);
+      else if (video.readyState >= 2) setReady(true);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [scrub]);
+
   const fade: CSSProperties = scrub
     ? {
         opacity: 'calc(1 - var(--hero-progress, 0) * 3)',

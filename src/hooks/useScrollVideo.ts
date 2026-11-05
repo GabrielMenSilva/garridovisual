@@ -1,6 +1,9 @@
 import { useEffect, type RefObject } from 'react';
 import { sectionProgress, shouldSeek, smoothTo } from '../lib/scroll';
 
+/** Depois deste tempo com um seek pendente, o próximo seek substitui o anterior. */
+const STALLED_SEEK_MS = 250;
+
 interface Options {
   sectionRef: RefObject<HTMLElement | null>;
   videoRef: RefObject<HTMLVideoElement | null>;
@@ -23,6 +26,7 @@ export function useScrollVideo({ sectionRef, videoRef, enabled }: Options): void
 
     let raf = 0;
     let last = 0;
+    let seekStartedAt = 0;
     let current = sectionProgress(
       section.getBoundingClientRect().top,
       section.offsetHeight,
@@ -42,8 +46,14 @@ export function useScrollVideo({ sectionRef, videoRef, enabled }: Options): void
       let waiting = false;
       if (Number.isFinite(duration) && duration > 0) {
         const wanted = Math.min(current * duration, Math.max(0, duration - 0.001));
-        if (video.seeking) waiting = true;
-        else if (shouldSeek(video.currentTime, wanted)) video.currentTime = wanted;
+        // Espera o seek anterior terminar (economiza decodificação), mas se ele emperrar
+        // (rede lenta), o próximo o substitui: o vídeo nunca fica parado no scroll.
+        const stalled = video.seeking && now - seekStartedAt > STALLED_SEEK_MS;
+        if (video.seeking && !stalled) waiting = true;
+        else if (shouldSeek(video.currentTime, wanted)) {
+          video.currentTime = wanted;
+          seekStartedAt = now;
+        }
       }
       if (current !== target || waiting) request();
       else last = 0;

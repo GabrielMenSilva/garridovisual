@@ -8,7 +8,7 @@ import { join, parse } from 'node:path';
 
 const ORIGENS = 'assets-originais';
 const SAIDA = 'public/images';
-const LARGURAS = [480, 800, 1200, 1600];
+const LARGURAS = [240, 480, 800, 1200, 1600];
 
 // Imagens usadas no site. Os quadros de vídeo (*-poster.jpg) ficam só em assets-originais/.
 const USADAS = [
@@ -66,8 +66,7 @@ for (const arquivo of USADAS) {
         continue;
       }
       const redimensionada = sharp(origem).rotate().resize({ width: w, withoutEnlargement: true });
-      await (ext === 'avif' ? redimensionada.avif(opcoes) : redimensionada.webp(opcoes))
-        .toFile(destino);
+      await (ext === 'avif' ? redimensionada.avif(opcoes) : redimensionada.webp(opcoes)).toFile(destino);
       gerados++;
     }
   }

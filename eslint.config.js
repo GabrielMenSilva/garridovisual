@@ -9,6 +9,9 @@ export default tseslint.config(
     ignores: [
       'dist',
       'dist-e2e',
+      'dist-ssr',
+      'dist-ssr-e2e',
+      'lighthouse',
       'coverage',
       'node_modules',
       'assets-originais',

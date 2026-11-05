@@ -1,9 +1,12 @@
 import { contact } from '../data/contact';
 import { site } from '../data/site';
 import { handleAnchorClick } from '../lib/nav';
+import { useCurrentYear } from '../hooks/useCurrentYear';
 import { Logo } from './Logo';
 
-export function Footer({ year = new Date().getFullYear() }: { year?: number }) {
+export function Footer({ year: fixedYear }: { year?: number }) {
+  const currentYear = useCurrentYear();
+  const year = fixedYear ?? currentYear;
   return (
     <footer className="border-t border-line bg-surface">
       <div className="container-x flex flex-col items-center justify-between gap-6 py-10 text-center sm:flex-row sm:text-left">
