@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { blockExternal, collectErrors, goToProject, revealAll, slideOf } from './helpers';
+import { blockExternal, collectErrors, goToProject, revealAll, settle, slideOf } from './helpers';
 
 async function axe(page: Page) {
   const result = await new AxeBuilder({ page })
@@ -15,6 +15,7 @@ test.describe('qualidade', () => {
     await page.goto('/');
     await revealAll(page);
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await settle(page);
     expect(await axe(page)).toEqual([]);
   });
 
@@ -27,9 +28,11 @@ test.describe('qualidade', () => {
       .click();
     const dialog = page.getByRole('dialog', { name: 'Juliana & Márcio' });
     await expect(dialog).toBeVisible();
+    await settle(page);
     expect(await axe(page)).toEqual([]);
     await dialog.getByRole('button', { name: /foto 1 de 8/ }).click();
     await expect(dialog.getByText('1 de 8')).toBeVisible();
+    await settle(page);
     expect(await axe(page)).toEqual([]);
   });
 

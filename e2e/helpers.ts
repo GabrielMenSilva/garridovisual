@@ -47,6 +47,33 @@ export async function revealAll(page: Page): Promise<void> {
   }
 }
 
+/**
+ * Espera a página "assentar" antes de medir (axe): nenhuma transição finita rodando
+ * (fade das seções, parallax do hero) e o progresso do hero estável. As animações
+ * infinitas (indicador "role para explorar") não contam.
+ */
+export async function settle(page: Page): Promise<void> {
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document
+            .getAnimations()
+            .filter((a) => a.playState === 'running' && a.effect?.getTiming().iterations !== Infinity).length,
+      ),
+    )
+    .toBe(0);
+  await expect
+    .poll(async () => {
+      const read = () =>
+        page.evaluate(() => document.getElementById('home')?.style.getPropertyValue('--hero-progress') ?? '');
+      const a = await read();
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      return a === (await read());
+    })
+    .toBe(true);
+}
+
 /** O slide (grupo) de um projeto. */
 export function slideOf(page: Page, title: string) {
   return page

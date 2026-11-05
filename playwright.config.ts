@@ -11,10 +11,14 @@ export default defineConfig({
   fullyParallel: true,
   // WebKit + decodificação do vídeo do hero pesam; com muitos workers o próprio navegador
   // atrasa animações e IntersectionObserver e os testes ficam instáveis.
-  workers: 4,
+  workers: 3,
   forbidOnly: true,
   retries: 0,
   reporter: [['list']],
+  // rolagem suave longa no WebKit com 3 navegadores em paralelo pode passar de 5 s
+  expect: { timeout: 10_000 },
+  // o WebKit no Windows é lento com axe + vídeo; os testes mais longos passam de 30 s
+  timeout: 60_000,
   use: { baseURL: PROD, trace: 'retain-on-failure' },
   webServer: [
     {

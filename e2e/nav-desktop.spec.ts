@@ -64,12 +64,13 @@ test.describe('navegação por URL', () => {
     browserName,
   }) => {
     await page.goto('/');
+    const skip = page.getByRole('link', { name: 'Pular para o conteúdo' });
+    await expect(skip).toBeAttached(); // espera o React montar a página
     const first = await page.evaluate(() =>
       document.querySelector('a[href], button, [tabindex]:not([tabindex="-1"])')?.textContent?.trim(),
     );
     expect(first).toBe('Pular para o conteúdo');
 
-    const skip = page.getByRole('link', { name: 'Pular para o conteúdo' });
     // O Safari só leva o Tab até links quando a opção do sistema está ligada;
     // no WebKit o foco é dado direto no link, no Chromium pela tecla Tab.
     if (browserName === 'webkit') await skip.focus();

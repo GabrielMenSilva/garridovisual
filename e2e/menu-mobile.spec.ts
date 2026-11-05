@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { topOf } from './helpers';
+import { settle, topOf } from './helpers';
 
 test.describe('menu mobile', () => {
   test.beforeEach(async ({ page }) => {
@@ -59,6 +59,7 @@ test.describe('menu mobile', () => {
   test('axe: sem violações com o menu aberto', async ({ page }) => {
     await page.getByRole('button', { name: 'Menu' }).click();
     await expect(page.getByRole('dialog', { name: 'Menu principal' })).toBeVisible();
+    await settle(page);
     const result = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
       .analyze();
