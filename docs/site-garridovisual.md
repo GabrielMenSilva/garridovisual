@@ -185,7 +185,7 @@ O teste `src/lib/theme.test.ts` recalcula esses valores e falha se algum cair ab
 
 ## Decisões e motivos
 
-- **Logo provisória.** O arquivo `logo-garridovisual-recorte.png` não veio junto e não estava em Desktop nem Downloads. Desenhei um **losango em espiral provisório**, no dourado `#D5A75A`, em `src/assets/logo-mark.svg` (`fill`/`stroke` = `currentColor`), e gerei dele favicons, ícones e `og-image.jpg`. Para trocar, veja "Pendências".
+- **Logo.** Na Parte 1 a logo não tinha chegado e o site usou uma marca provisória. Depois da Parte 2 o Gabriel enviou a logo (losango com o "G" em espiral e o "V"), guardada em `assets-originais/logo-garridovisual-enviada.jpg` (fora do Git). Ela foi **redesenhada em vetor com as medidas exatas** (faixas de 77 e vãos de 40 num quadrado de 545 girado 45°, 95,6% de sobreposição com a imagem) em `scripts/gerar-marca.mjs`, que gera `src/assets/logo-mark.svg` (`fill="currentColor"`), favicons, ícones e `og-image.jpg`. As cores são as do site: dourado `#D5A75A` (na imagem enviada, `#D1A65D`, diferença do JPEG) sobre grafite `#171717`.
 - **HTML pré-renderizado** (`src/entry-server.tsx` + `scripts/prerender.mjs`). Sem isso, o título só aparecia depois de o JavaScript rodar (LCP de 2,7 s). Com isso, a página inteira funciona sem JavaScript e o `<noscript>` deixou de ser necessário.
 - **`content-visibility: auto`** em Projetos, Sobre e Contato. O navegador não renderiza essas seções até chegarem perto da tela. Na emulação móvel do Chrome, a capa do slide 1 (2,8 telas abaixo) entrava como LCP; isso derrubava o LCP para 3,3 s, e o ajuste resolveu.
 - **Correção da posição ao rolar por âncora** (`settleOnSection`). Com alturas estimadas e sem "scroll anchoring" no Safari, o destino podia se deslocar. O site confere a posição ao fim da rolagem e corrige.
@@ -252,7 +252,7 @@ Usei os fatos da seção 2 do pedido e conferi com o texto do Wix:
 
 ## Pendências do Garrido / Gabriel
 
-1. **Logo original** (SVG ou PNG grande). Quando chegar, vetorize em `src/assets/logo-mark.svg` com `fill="currentColor"` e rode `node scripts/gerar-marca.mjs --sem-marca` para regerar favicons, ícones e a og-image. Hoje a marca é **provisória**.
+1. **Logo**: ✅ entregue e aplicada (veja "Decisões"). Se houver o arquivo original em vetor (SVG/AI/PDF), vale conferir as proporções com ele; para regerar tudo: `node scripts/gerar-marca.mjs`.
 2. **Vídeo do hero** (o atual é de teste; a pasta `videos e fotos` não tem candidato). Pode ser um arquivo com `hero` ou `showreel` no nome, horizontal.
 3. **Vídeo principal de Hey Maringá, El Piratas, Ody Park, MK5, Heitor Amatsu e do projeto Casamento** (pasta com o nome do projeto em `videos e fotos`, YouTube ou Vimeo). Hoje mostram "Vídeo em breve".
 4. **Foto do Garrido** (retrato, de preferência vertical). Hoje aparece o bloco "GV".
