@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { projects } from '../data/projects';
+import { projects } from '../data/projetosDoSite';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useReveal } from '../hooks/useReveal';
 import { ArrowIcon } from './Icons';

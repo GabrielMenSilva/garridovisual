@@ -23,7 +23,11 @@ function pendente(it: Item): boolean {
 
 function rotulo(it: Item): string {
   if (it.tipo === 'foto') return `Ampliar: ${it.alt}`;
-  return pendente(it) ? `Abrir vídeo (em breve): ${it.titulo}` : `Abrir vídeo: ${it.titulo}`;
+  if (pendente(it)) return `Abrir vídeo (em breve): ${it.titulo}`;
+  // a duração visível na miniatura entra no nome (WCAG 2.5.3, "label in name")
+  return it.tipo === 'video'
+    ? `Abrir vídeo: ${it.titulo}, duração ${duracaoLegivel(it.duracao)}`
+    : `Abrir vídeo: ${it.titulo}`;
 }
 
 /**
@@ -173,7 +177,6 @@ export function GalleryDialog({ project, onClose }: GalleryDialogProps) {
                           </span>
                           {it.tipo === 'video' && (
                             <span className="absolute bottom-2 right-2 bg-bg/85 px-2 py-0.5 text-xs font-semibold tabular-nums text-ink">
-                              <span className="sr-only">Duração </span>
                               {duracaoLegivel(it.duracao)}
                             </span>
                           )}

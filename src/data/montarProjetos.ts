@@ -28,6 +28,8 @@ export interface TextoProjeto {
   readonly videoPrincipal?: string | EmbedEscrito | null;
   /** Fotos antigas (imagens.generated.ts) que entram na galeria antes das fotos novas. */
   readonly fotosAntigas?: readonly { readonly imagem: ImagemId; readonly alt: string }[];
+  /** Texto alternativo por foto nova, pelo `arquivo` do manifesto (ex.: { '03-foto': 'Noivos na saída da igreja' }). */
+  readonly altDasFotos?: Readonly<Record<string, string>>;
   readonly linkExterno?: { readonly rotulo: string; readonly href: string };
 }
 
@@ -133,7 +135,7 @@ function montarUm(texto: TextoProjeto, m: MidiaProjeto | undefined): Projeto {
     tipo: 'foto',
     imagem: { ...f.imagem, larguras: [...f.imagem.larguras], formatos: [...f.imagem.formatos] },
     // TODO(garrido): descrever melhor cada foto (texto alternativo)
-    alt: `${texto.titulo} — foto ${fotosAntigas.length + i + 1}`,
+    alt: texto.altDasFotos?.[f.arquivo] ?? `${texto.titulo} — foto ${fotosAntigas.length + i + 1}`,
     largura: f.largura,
     altura: f.altura,
     orientacao: f.orientacao,

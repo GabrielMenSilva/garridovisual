@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { MidiaProjeto } from '../lib/tipos-midia';
 import { midia } from './media.generated';
 import { montarProjetos, type TextoProjeto } from './montarProjetos';
-import { projects, textos } from './projects';
+import { projetos as projects, textos } from './projects';
 import { criarSchemaProjetos, type Imagem, type ItemVideo } from './schema';
 
 const existeEmPublic = (caminho: string) => existsSync(join('public', caminho));
@@ -262,6 +262,24 @@ describe('montarProjetos', () => {
     ]);
     expect(p?.capa.base).toBe('/images/projetos/f1-poster');
     expect(p?.videoPrincipal).toBeNull();
+  });
+
+  it('altDasFotos troca o texto alternativo de uma foto pelo nome do arquivo', () => {
+    const foto = {
+      tipo: 'foto' as const,
+      arquivo: '01-foto',
+      imagem: poster('f1'),
+      largura: 6000,
+      altura: 4000,
+      orientacao: 'horizontal' as const,
+    };
+    const [p] = montarProjetos([texto('a', { altDasFotos: { '02-foto': 'Noivos no altar' } })], {
+      a: midiaDe('a', { fotos: [foto, { ...foto, arquivo: '02-foto' }] }),
+    });
+    expect(p?.galeria.map((g) => (g.tipo === 'foto' ? g.alt : ''))).toEqual([
+      'Projeto a — foto 1',
+      'Noivos no altar',
+    ]);
   });
 
   it('sem mídia e sem capa: erro claro', () => {

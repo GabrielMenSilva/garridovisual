@@ -134,27 +134,7 @@ export const textos = [
   },
 ] as const satisfies readonly TextoProjeto[];
 
-const montados = projetosSchema.parse(montarProjetos(textos, midia));
-
-/**
- * Só no build de testes (`vite build --mode e2e`): liga vídeos fictícios do YouTube nos dois primeiros
- * projetos (que não têm vídeo) para testar o player de embed. Em produção este ramo é removido do bundle.
- */
-export const projects: readonly Projeto[] =
-  import.meta.env.MODE === 'e2e'
-    ? montados.map((p, i) =>
-        i < 2
-          ? {
-              ...p,
-              videoPrincipal: {
-                tipo: 'youtube' as const,
-                id: `e2eFixture${i}`,
-                titulo: p.titulo,
-                poster: p.capa,
-              },
-            }
-          : p,
-      )
-    : montados;
+/** Projetos prontos (texto + mídia), validados com zod. Os componentes usam src/data/projetosDoSite.ts. */
+export const projetos: readonly Projeto[] = projetosSchema.parse(montarProjetos(textos, midia));
 
 export type { Projeto, Item, ItemVideo, ItemFoto, ItemEmbed, Imagem } from './schema';

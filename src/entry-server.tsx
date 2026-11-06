@@ -12,5 +12,5 @@ export function render(): string {
 }
 
 // usados pelo scripts/prerender.mjs para validar, no build, que todo arquivo citado existe
-export { projects } from './data/projects';
+export { projects } from './data/projetosDoSite';
 export { criarSchemaProjetos } from './data/schema';
