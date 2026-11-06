@@ -4,10 +4,44 @@
 
 /** Extensões reconhecidas. */
 export const EXT_VIDEO = ['mp4', 'mov', 'm4v', 'mkv', 'avi', 'webm', 'wmv', 'mts', 'm2ts', '3gp'];
-export const EXT_FOTO = ['jpg', 'jpeg', 'png', 'heic', 'heif', 'webp', 'tif', 'tiff', 'avif', 'gif', 'dng', 'raw', 'cr2', 'nef', 'arw'];
+export const EXT_FOTO = [
+  'jpg',
+  'jpeg',
+  'png',
+  'heic',
+  'heif',
+  'webp',
+  'tif',
+  'tiff',
+  'avif',
+  'gif',
+  'dng',
+  'raw',
+  'cr2',
+  'nef',
+  'arw',
+];
 export const EXT_TEXTO = ['txt', 'md', 'docx'];
 /** Formatos fora do comum: entram no inventário como alerta. */
-export const EXT_INCOMUM = ['mov', 'mkv', 'avi', 'wmv', 'mts', 'm2ts', '3gp', 'heic', 'heif', 'webp', 'tif', 'tiff', 'dng', 'raw', 'cr2', 'nef', 'arw'];
+export const EXT_INCOMUM = [
+  'mov',
+  'mkv',
+  'avi',
+  'wmv',
+  'mts',
+  'm2ts',
+  '3gp',
+  'heic',
+  'heif',
+  'webp',
+  'tif',
+  'tiff',
+  'dng',
+  'raw',
+  'cr2',
+  'nef',
+  'arw',
+];
 /** Formatos de foto que o sharp não abre (RAW de câmera): ficam de fora com aviso. */
 export const EXT_FOTO_RAW = ['dng', 'raw', 'cr2', 'nef', 'arw'];
 
@@ -89,7 +123,7 @@ export function nomeLimpo(nome) {
   return semExtensao(nome)
     .replace(/\(\d+\)/g, ' ')
     .replace(/[\d]+/g, ' ')
-    .replace(/[._\-]+/g, ' ')
+    .replace(/[._-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -125,12 +159,7 @@ const ACENTOS = {
  */
 export function tituloDeNome(nome) {
   const base = semPrefixo(nome) || semExtensao(nome);
-  const palavras = base
-    .replace(/[_\-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .split(' ')
-    .filter(Boolean);
+  const palavras = base.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
   return palavras
     .map((p, i) => {
       if (p.length > 1 && p === p.toUpperCase() && /[A-Z]/.test(p)) return p; // sigla
@@ -209,7 +238,14 @@ export function ligarAoProjeto(caminhoRelativo, conhecidos, apelidos = {}) {
     conhecidos.find((p) => p.slug === forcado) ??
     conhecidos.find((p) => chave(p.slug) === k || (p.titulo !== undefined && chave(p.titulo) === k));
   if (achado) return { slug: achado.slug, pasta: nomeOrigem, nomeOrigem, existente: true, ordem, regra };
-  return { slug: forcado ?? slugify(nomeBase), pasta: nomeOrigem, nomeOrigem, existente: false, ordem, regra };
+  return {
+    slug: forcado ?? slugify(nomeBase),
+    pasta: nomeOrigem,
+    nomeOrigem,
+    existente: false,
+    ordem,
+    regra,
+  };
 }
 
 const colador = new Intl.Collator('pt-BR', { numeric: true, sensitivity: 'base' });
@@ -248,7 +284,9 @@ const PALAVRAS_PRINCIPAL = ['principal', 'main', 'destaque', 'capa'];
  */
 export function escolherPrincipal(videos) {
   if (!videos.length) return null;
-  const marcado = videos.find((v) => tokens(nomeDoArquivo(v.caminho)).some((t) => PALAVRAS_PRINCIPAL.includes(t)));
+  const marcado = videos.find((v) =>
+    tokens(nomeDoArquivo(v.caminho)).some((t) => PALAVRAS_PRINCIPAL.includes(t)),
+  );
   if (marcado) return marcado;
   return ordenarMidia(videos)[0] ?? null;
 }
@@ -318,7 +356,7 @@ export function duracaoLegivel(segundos) {
 /** Nome problemático: acento, espaço, "(1)", "copia"/"cópia"/"copy", ponto duplo. */
 export function problemasDoNome(nome) {
   const p = [];
-  if (/[^\x00-\x7F]/.test(nome)) p.push('acento');
+  if (/[^ -~]/.test(nome)) p.push('acento'); // fora do ASCII visível
   if (/\s/.test(nome)) p.push('espaço');
   if (/\(\d+\)/.test(nome)) p.push('"(n)"');
   if (/c[oó]pia|copy/i.test(nome)) p.push('cópia');

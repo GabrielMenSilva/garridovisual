@@ -100,11 +100,21 @@ export function rodar(bin, args, { timeoutMs = 30 * 60_000 } = {}) {
  * codec, perfil, quadros por segundo e se tem áudio.
  */
 export async function sondarVideo(ffprobe, arquivo) {
-  const { stdout } = await rodar(ffprobe, ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', arquivo]);
+  const { stdout } = await rodar(ffprobe, [
+    '-v',
+    'error',
+    '-show_streams',
+    '-show_format',
+    '-of',
+    'json',
+    arquivo,
+  ]);
   const j = JSON.parse(stdout.toString());
   const v = (j.streams ?? []).find((s) => s.codec_type === 'video');
   if (!v) throw new Error('sem trilha de vídeo');
-  const rot = Number(v.tags?.rotate ?? v.side_data_list?.find((d) => d.rotation !== undefined)?.rotation ?? 0);
+  const rot = Number(
+    v.tags?.rotate ?? v.side_data_list?.find((d) => d.rotation !== undefined)?.rotation ?? 0,
+  );
   const deitado = Math.abs(rot) % 180 === 90;
   const [n, d] = String(v.avg_frame_rate && v.avg_frame_rate !== '0/0' ? v.avg_frame_rate : v.r_frame_rate)
     .split('/')
@@ -145,7 +155,8 @@ export async function lerProjetosConhecidos(arquivo = 'src/data/projects.ts') {
   const { readFile } = await import('node:fs/promises');
   const texto = await readFile(arquivo, 'utf8');
   const projetos = [];
-  const re = /slug:\s*'([a-z0-9-]+)'\s*,\s*(?:titulo|title):\s*'([^']*)'/g;
+  // tolera comentários entre o slug e o título
+  const re = /slug:\s*'([a-z0-9-]+)'[^{}]*?(?:titulo|title):\s*'([^']*)'/g;
   for (const m of texto.matchAll(re)) projetos.push({ slug: m[1], titulo: m[2] });
   return projetos;
 }

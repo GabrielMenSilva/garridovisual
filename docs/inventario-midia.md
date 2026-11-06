@@ -1,6 +1,6 @@
 # Inventário da mídia (`videos e fotos`)
 
-Gerado por `pnpm media:inventory` (`scripts/inventariar-midia.mjs`). A pasta é **somente leitura**: nada nela é renomeado, movido ou apagado, e ela não vai para o Git.
+Gerado por `pnpm media:inventory` (`scripts/inventariar-midia.mjs`). A pasta é **somente leitura**: nada nela é renomeado, movido ou apagado, e ela não vai para o Git. "Projetos existentes" = os de `.cache/projects-parte1.ts` (6 projetos).
 
 ## Resumo
 
@@ -41,17 +41,23 @@ O nome é comparado **sem acento, sem maiúsculas, sem espaços/hífens e sem o 
 
 ### Projetos existentes com mídia nova
 
-_Nenhum._ Nenhuma pasta ou arquivo casou com os 6 projetos do site (`hey-maringa`, `el-piratas`, `ody-park`, `juliana-e-marcio`, `mk5`, `heitor-amatsu`). Eles continuam como estão.
+| Projeto | Origem | Vídeos | Fotos |
+|---|---|---:|---:|
+| `juliana-e-marcio` | `casamento` (ajuste) | 1 | 0 |
 
 ### Projetos novos
 
 | Slug | Título sugerido | Origem | Regra | Vídeos | Fotos | Textos | Vídeo principal (sugestão) |
 |---|---|---|---|---:|---:|---:|---|
 | `barberaria` | Barberaria | `barberaria` | C (arquivo solto) | 1 | 0 | 0 | `barberaria.mp4` |
-| `casamento` | Casamento | `casamento` | A (pasta) | 1 | 41 | 0 | `casamento.mp4` |
+| `casamento` | Casamento | `casamento` | A (pasta) | 0 | 41 | 0 | — |
 | `fora-de-centro` | Fora de Centro | `fora de centro` | A (pasta) | 2 | 0 | 0 | `edit estilo.mp4` |
 | `mg-natacao` | MG Natação | `MG nataçao` | A (pasta) | 4 | 0 | 0 | `1.1.1.1.mp4` |
 | `pedido-de-casamento` | Pedido de Casamento | `pedido de casamento` | C (arquivo solto) | 1 | 0 | 0 | `pedido de casamento.mp4` |
+
+### Ajustes manuais (`scripts/midia-ajustes.json`)
+
+- `casamento/casamento.mp4` → projeto `juliana-e-marcio`, girado 270° no sentido horário. O vídeo abre com o título 'Juliana e Marcio' e mostra o mesmo casal das fotos antigas do projeto Juliana & Márcio (as fotos da pasta 'casamento' são de outro casal). O arquivo está deitado do começo ao fim (a imagem está girada 90° no sentido horário dentro de um quadro 720×1280), então é girado 90° no sentido anti-horário. TODO(garrido): confirmar.
 
 ## Candidatos especiais
 
