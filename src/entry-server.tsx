@@ -10,3 +10,7 @@ export function render(): string {
     </StrictMode>,
   );
 }
+
+// usados pelo scripts/prerender.mjs para validar, no build, que todo arquivo citado existe
+export { projects } from './data/projects';
+export { criarSchemaProjetos } from './data/schema';

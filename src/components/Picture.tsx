@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react';
-import { imagens, type ImagemId } from '../data/imagens.generated';
+import type { Imagem } from '../data/schema';
 
 interface PictureProps {
-  id: ImagemId;
+  imagem: Imagem;
   alt: string;
   sizes: string;
   priority?: boolean;
@@ -10,27 +10,34 @@ interface PictureProps {
   style?: CSSProperties;
 }
 
-/** <picture> com AVIF/WebP, srcset, width/height reais e blur placeholder. */
-export function Picture({ id, alt, sizes, priority = false, className, style }: PictureProps) {
-  const meta = imagens[id];
-  const srcSet = (ext: 'avif' | 'webp') =>
-    meta.widths.map((w) => `/images/${id}-${w}.${ext} ${w}w`).join(', ');
-  const largest = meta.widths[meta.widths.length - 1];
+const TIPOS: Record<string, string> = { avif: 'image/avif', webp: 'image/webp', jpg: 'image/jpeg' };
+
+/**
+ * <picture> com srcset em cada formato (AVIF primeiro), width/height reais e blur placeholder.
+ * O último formato da imagem é o de reserva do <img> (WebP nas fotos, JPG nos posters).
+ */
+export function Picture({ imagem, alt, sizes, priority = false, className, style }: PictureProps) {
+  const srcSet = (ext: string) => imagem.larguras.map((w) => `${imagem.base}-${w}.${ext} ${w}w`).join(', ');
+  const reserva = imagem.formatos[imagem.formatos.length - 1] ?? 'webp';
+  const maior = imagem.larguras[imagem.larguras.length - 1];
 
   return (
     <picture>
-      <source type="image/avif" srcSet={srcSet('avif')} sizes={sizes} />
-      <source type="image/webp" srcSet={srcSet('webp')} sizes={sizes} />
+      {imagem.formatos.slice(0, -1).map((ext) => (
+        <source key={ext} type={TIPOS[ext]} srcSet={srcSet(ext)} sizes={sizes} />
+      ))}
       <img
-        src={`/images/${id}-${largest}.webp`}
+        src={`${imagem.base}-${maior}.${reserva}`}
+        srcSet={srcSet(reserva)}
+        sizes={sizes}
         alt={alt}
-        width={meta.width}
-        height={meta.height}
+        width={imagem.largura}
+        height={imagem.altura}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         fetchPriority={priority ? 'high' : undefined}
         className={className}
-        style={{ backgroundImage: `url("${meta.blur}")`, backgroundSize: 'cover', ...style }}
+        style={{ backgroundImage: `url("${imagem.blur}")`, backgroundSize: 'cover', ...style }}
       />
     </picture>
   );

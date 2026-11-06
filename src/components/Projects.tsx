@@ -16,6 +16,7 @@ export function Projects() {
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
   const [gallerySlug, setGallerySlug] = useState<string | null>(null);
   const regionRef = useRef<HTMLDivElement>(null);
+  const thumbsRef = useRef<HTMLUListElement>(null);
   const galleryTrigger = useRef<HTMLElement | null>(null);
   const reveal = useReveal<HTMLDivElement>();
   const total = projects.length;
@@ -46,6 +47,21 @@ export function Projects() {
     return () => region.removeEventListener('keydown', handler);
   }, [embla]);
 
+  // leva a miniatura ativa à vista na tira (rola só a tira, nunca a página)
+  useEffect(() => {
+    const strip = thumbsRef.current;
+    const thumb = strip?.children[selected] as HTMLElement | undefined;
+    if (!strip || !thumb) return;
+    const left = thumb.offsetLeft - strip.offsetLeft;
+    const right = left + thumb.offsetWidth;
+    if (left < strip.scrollLeft || right > strip.scrollLeft + strip.clientWidth) {
+      strip.scrollTo({
+        left: left - (strip.clientWidth - thumb.offsetWidth) / 2,
+        behavior: reduced ? 'auto' : 'smooth',
+      });
+    }
+  }, [selected, reduced]);
+
   const galleryProject = projects.find((p) => p.slug === gallerySlug) ?? null;
 
   return (
@@ -74,6 +90,7 @@ export function Projects() {
                     onPlay={() => setPlayingSlug(project.slug)}
                     onOpenGallery={(trigger) => {
                       galleryTrigger.current = trigger;
+                      setPlayingSlug(null); // abrir a galeria pausa o vídeo do slide
                       setGallerySlug(project.slug);
                     }}
                   />
@@ -111,13 +128,17 @@ export function Projects() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2" role="group" aria-label="Escolher projeto">
+              <div
+                className="flex flex-wrap items-center gap-x-0.5"
+                role="group"
+                aria-label="Escolher projeto"
+              >
                 {projects.map((project, i) => (
                   <button
                     key={project.slug}
                     type="button"
                     onClick={() => embla?.scrollTo(i)}
-                    aria-label={`Ir para ${project.title}`}
+                    aria-label={`Ir para ${project.titulo}`}
                     aria-current={i === selected ? 'true' : undefined}
                     className="group inline-flex size-11 items-center justify-center"
                   >
@@ -130,22 +151,29 @@ export function Projects() {
               </div>
             </div>
 
-            <ul className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6" aria-label="Miniaturas dos projetos">
+            <ul
+              ref={thumbsRef}
+              className="mt-6 flex snap-x gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]"
+              aria-label="Miniaturas dos projetos"
+            >
               {projects.map((project, i) => (
-                <li key={project.slug}>
+                <li
+                  key={project.slug}
+                  className="w-[calc((100%-1.5rem)/3)] shrink-0 snap-start sm:w-[calc((100%-3.75rem)/6)]"
+                >
                   <button
                     type="button"
                     onClick={() => embla?.scrollTo(i)}
-                    aria-label={project.title}
+                    aria-label={project.titulo}
                     aria-current={i === selected ? 'true' : undefined}
                     className={`relative block aspect-video w-full overflow-hidden border transition-[border-color,opacity] ${i === selected ? 'border-gold opacity-100' : 'border-line opacity-60 hover:opacity-100'}`}
                   >
                     <Picture
-                      id={project.cover}
+                      imagem={project.capa}
                       alt=""
                       sizes="(min-width: 640px) 15vw, 30vw"
                       className="h-full w-full object-cover"
-                      style={{ objectPosition: project.coverFocus }}
+                      style={{ objectPosition: project.capaFoco }}
                     />
                   </button>
                 </li>
