@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { Logo } from './Logo';
 import { Picture } from './Picture';
 import { imagemAntiga } from '../data/montarProjetos';
+import { comBase } from '../lib/url';
 
 /**
  * Home: o vídeo do fundo anda junto com o scroll (ver useScrollVideo).
@@ -74,7 +75,7 @@ export function Hero() {
         {scrub && (
           <video
             ref={videoRef}
-            src={site.hero.video.mp4}
+            src={comBase(site.hero.video.mp4)}
             muted
             playsInline
             preload={preload}

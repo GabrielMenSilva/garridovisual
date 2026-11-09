@@ -56,6 +56,7 @@
     "lighthouse": "node scripts/lighthouse.mjs",
     "build:e2e": "vite build --mode e2e --outDir dist-e2e && vite build --mode e2e --ssr src/entry-server.tsx --outDir dist-ssr-e2e && node scripts/prerender.mjs dist-e2e dist-ssr-e2e",
     "media:inventory": "node scripts/inventariar-midia.mjs",
-    "media:import": "node scripts/importar-midia.mjs"
+    "media:import": "node scripts/importar-midia.mjs",
+    "deploy:pages": "node scripts/publicar-pages.mjs"
   }
 }

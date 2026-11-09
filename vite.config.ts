@@ -28,7 +28,10 @@ function siteUrlPlugin(siteUrl: string): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
   const siteUrl = (env.VITE_SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, '');
+  // VITE_BASE=/garridovisual/ no GitHub Pages (subcaminho); na raiz de um domínio, "/"
+  const base = env.VITE_BASE || '/';
   return {
+    base,
     plugins: [react(), tailwindcss(), siteUrlPlugin(siteUrl)],
     define: { __SITE_URL__: JSON.stringify(siteUrl) },
     build: { target: 'es2022', sourcemap: false },

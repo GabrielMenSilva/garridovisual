@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type CSSProperties } from 'react';
 import type { Imagem, VideoPrincipal } from '../data/schema';
 import { buildEmbedUrl, type EmbedMedia } from '../lib/media';
+import { comBase } from '../lib/url';
 import { PlayIcon } from './Icons';
 import { Picture } from './Picture';
 
@@ -84,8 +85,8 @@ export function VideoPlayer({
         // eslint-disable-next-line jsx-a11y/media-has-caption
         <video
           ref={videoRef}
-          src={video.src}
-          poster={urlDoPoster(video.poster)}
+          src={comBase(video.src)}
+          poster={comBase(urlDoPoster(video.poster))}
           controls
           playsInline
           preload="metadata"

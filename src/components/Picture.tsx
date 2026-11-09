@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Imagem } from '../data/schema';
+import { comBase } from '../lib/url';
 
 interface PictureProps {
   imagem: Imagem;
@@ -17,7 +18,8 @@ const TIPOS: Record<string, string> = { avif: 'image/avif', webp: 'image/webp', 
  * O último formato da imagem é o de reserva do <img> (WebP nas fotos, JPG nos posters).
  */
 export function Picture({ imagem, alt, sizes, priority = false, className, style }: PictureProps) {
-  const srcSet = (ext: string) => imagem.larguras.map((w) => `${imagem.base}-${w}.${ext} ${w}w`).join(', ');
+  const base = comBase(imagem.base);
+  const srcSet = (ext: string) => imagem.larguras.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
   const reserva = imagem.formatos[imagem.formatos.length - 1] ?? 'webp';
   const maior = imagem.larguras[imagem.larguras.length - 1];
 
@@ -27,7 +29,7 @@ export function Picture({ imagem, alt, sizes, priority = false, className, style
         <source key={ext} type={TIPOS[ext]} srcSet={srcSet(ext)} sizes={sizes} />
       ))}
       <img
-        src={`${imagem.base}-${maior}.${reserva}`}
+        src={`${base}-${maior}.${reserva}`}
         srcSet={srcSet(reserva)}
         sizes={sizes}
         alt={alt}

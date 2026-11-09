@@ -29,3 +29,5 @@ dist-ssr-e2e/
 # Mídia bruta do Garrido (somente leitura, nunca vai para o Git) e cache do import
 videos e fotos/
 .cache/
+dist-pages/
+dist-ssr-pages/
