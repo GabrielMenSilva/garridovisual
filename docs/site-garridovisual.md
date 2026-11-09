@@ -93,6 +93,20 @@ Sobre os testes de vídeo:
 
 Não há na pasta nenhum candidato a vídeo do hero (`hero`, `home`, `showreel`, `intro`, `capa`), foto do Garrido (`garrido`, `sobre`, `retrato`, `perfil`, `eu`), logo nem texto de história. Por isso o **vídeo provisório do hero, o bloco "GV" do Sobre e a história em rascunho continuam**. A descrição do site e o JSON-LD não mudaram: nenhum fato novo foi confirmado.
 
+## Prévia no GitHub Pages
+
+O site está no ar para conferência em **https://gabrielmensilva.github.io/garridovisual/** (público). Não é o endereço definitivo: falta escolher domínio e hospedagem.
+
+- O GitHub Pages serve a branch **`gh-pages`**, que só tem o site já gerado. O código continua nas outras branches. A fonte do Pages estava na `feat/site-garridovisual` (o código-fonte, que não monta) e foi trocada para `gh-pages`.
+- Como o endereço tem um subcaminho (`/garridovisual/`), o build aceita `VITE_BASE`. Imagens e vídeos passam por `comBase()` (`src/lib/url.ts`). Na raiz de um domínio, nada muda.
+- Para atualizar a prévia depois de qualquer mudança:
+
+```bash
+pnpm deploy:pages
+```
+
+O comando gera `dist-pages/`, confere a mídia e envia um commit normal (sem `--force`) para a `gh-pages`; o site atualiza em 1 a 2 minutos. Para conferir antes, `node scripts/preview-pages.mjs` serve a mesma versão em `http://localhost:4175/garridovisual/`.
+
 ## Como rodar
 
 ```bash
