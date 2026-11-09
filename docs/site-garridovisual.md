@@ -3,7 +3,7 @@
 Site institucional de uma página do **GarridoVisual** (Garrido: filmmaker, fotógrafo e editor em Maringá, PR). Está pronto e testado **localmente**. Não foi publicado, e não há domínio, hospedagem nem `remote` no Git.
 
 - Branches: `feat/site-garridovisual` (Parte 1) e `feat/midia-garridovisual` (Parte 2, mídia do Garrido). Sem PR, sem merge, sem push.
-- A pasta do projeto chegou **sem `.git`**: o repositório foi reiniciado localmente com um commit de base (`chore: baseline from part 1`) na `feat/site-garridovisual`, e a Parte 2 saiu dela.
+- Repositório: [github.com/GabrielMenSilva/garridovisual](https://github.com/GabrielMenSilva/garridovisual) (público). A pasta local tinha chegado sem `.git`; a Parte 2 foi reaplicada em cima da história da `feat/site-garridovisual` que já estava no GitHub (o conteúdo era idêntico, só o `.gitignore` ganhou `videos e fotos/` e `.cache/`).
 - Stack: Vite 8 + React 19 + TypeScript 6 (strict) + Tailwind CSS 4, Embla Carousel, zod, Vitest, Playwright + axe
 - Build 100% estático, com o HTML **pré-renderizado** (a página inteira já vem no `index.html`)
 
