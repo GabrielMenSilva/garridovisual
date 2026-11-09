@@ -17,10 +17,10 @@ interface LogoProps {
 }
 
 /**
- * Marca do GarridoVisual (losango em espiral), sempre na cor do texto atual (`--gold`).
+ * Marca do GarridoVisual (losango com o "G" em espiral e o "V"), sempre na cor do texto atual (`--gold`).
  * Regras: nunca distorcer, girar, trocar de cor nem aplicar sombra/contorno; área de respiro
  * mínima = 1/4 da altura da marca.
- * TODO(garrido): a marca atual é PROVISÓRIA (a logo original não foi entregue).
+ * O SVG é gerado por scripts/gerar-marca.mjs a partir da logo enviada (assets-originais/logo-garridovisual-enviada.jpg).
  */
 export function Logo({ variant = 'horizontal', size, className = '' }: LogoProps) {
   const h = size ?? (variant === 'hero' ? 112 : 36);

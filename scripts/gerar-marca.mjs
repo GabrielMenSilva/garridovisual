@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Gera a marca (losango em espiral), favicons, ícones do manifest e og-image.
-// TODO(garrido): a logo original (logo-garridovisual-recorte.png) não foi entregue.
-// Este script desenha uma marca PROVISÓRIA. Quando a logo real chegar, vetorize-a em
-// src/assets/logo-mark.svg (fill="currentColor") e rode este script só para os derivados
-// (passe --sem-marca para não sobrescrever o SVG).
+// Gera a marca do GarridoVisual (src/assets/logo-mark.svg), favicons, ícones do manifest e og-image.
+//
+// A marca é a logo enviada pelo Gabriel (assets-originais/logo-garridovisual-enviada.jpg), redesenhada
+// em vetor com as medidas exatas: um quadrado de 545 unidades girado 45°, feito de faixas de 77 e
+// vãos de 40 — o "G" em espiral no centro e o "V" (um L) por fora. Conferida contra a imagem original
+// (sobreposição de 95,6% no recorte, com a borda do JPEG borrada).
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
@@ -11,44 +12,30 @@ import { resolve } from 'node:path';
 
 const OURO = '#D5A75A';
 const GRAFITE = '#171717';
-const semMarca = process.argv.includes('--sem-marca');
 
 await mkdir('src/assets', { recursive: true });
 await mkdir('public', { recursive: true });
 
-// --- 1. Marca provisória: espiral de losangos aninhados ---
-function espiral() {
-  const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-  // espiral quadrada girada 45°: cada ponto novo fica a 13% do caminho entre dois anteriores
-  const s = [
-    [50, 3],
-    [97, 50],
-    [50, 97],
-    [3, 50],
-  ];
-  for (let k = 0; k < 52; k++) s.push(lerp(s[k], s[k + 1], 0.13));
-  return s.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join('');
-}
+// --- 1. Marca: duas formas num quadrado 545×545, giradas 45° ---
+const FORMA_V = 'M468 0H545V545H0V468H468Z';
+const FORMA_G = 'M0 0H428V77H77V351H351V194H194V234H311V311H117V117H428V428H0Z';
+const ESCALA = (94 / (545 * Math.SQRT2)).toFixed(6); // o losango ocupa de 3 a 97 numa caixa 100×100
+
+/** Grupo SVG da marca dentro de uma caixa 100×100. */
+const grupo = (cor) =>
+  `<g transform="translate(50 50) scale(${ESCALA}) rotate(45) translate(-272.5 -272.5)" fill="${cor}"><path d="${FORMA_V}"/><path d="${FORMA_G}"/></g>`;
 
 const marca = (cor, extra = '') =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" ${extra}><path d="${espiral()}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="miter" stroke-linecap="butt"/></svg>`;
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" ${extra}>${grupo(cor)}</svg>`;
 
-if (!semMarca) {
-  await writeFile(
-    'src/assets/logo-mark.svg',
-    marca('currentColor', 'role="img" aria-hidden="true"').replace(
-      '<svg ',
-      '<!-- TODO(garrido): marca provisória; trocar pela logo real --><svg ',
-    ),
-  );
-}
+await writeFile('src/assets/logo-mark.svg', marca('currentColor', 'role="img" aria-hidden="true"') + '\n');
 
 // --- 2. Favicons e ícones (marca dourada sobre grafite) ---
 const iconeSvg = (tam, margem) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${tam}" height="${tam}" viewBox="0 0 ${tam} ${tam}">
     <rect width="${tam}" height="${tam}" fill="${GRAFITE}"/>
     <g transform="translate(${margem} ${margem}) scale(${(tam - margem * 2) / 100})">
-      <path d="${espiral()}" fill="none" stroke="${OURO}" stroke-width="2.8"/>
+      ${grupo(OURO)}
     </g></svg>`;
 
 await writeFile('public/favicon.svg', iconeSvg(64, 6).replace(/width="64" height="64" /, ''));

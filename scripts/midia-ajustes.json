@@ -1,0 +1,10 @@
+{
+  "_leia-me": "Ajustes manuais do `pnpm media:import`, por arquivo (caminho relativo à pasta `videos e fotos`). 'projeto': slug do projeto ao qual o arquivo pertence (vence a regra pelo nome da pasta). 'girar': graus no sentido horário (90, 180 ou 270) para endireitar um vídeo/foto deitado. Para desfazer, apague a entrada e rode `pnpm media:import`.",
+  "arquivos": {
+    "casamento/casamento.mp4": {
+      "projeto": "juliana-e-marcio",
+      "girar": 270,
+      "motivo": "O vídeo abre com o título 'Juliana e Marcio' e mostra o mesmo casal das fotos antigas do projeto Juliana & Márcio (as fotos da pasta 'casamento' são de outro casal). O arquivo está deitado do começo ao fim (a imagem está girada 90° no sentido horário dentro de um quadro 720×1280), então é girado 90° no sentido anti-horário. TODO(garrido): confirmar."
+    }
+  }
+}

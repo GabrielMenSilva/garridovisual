@@ -5,6 +5,7 @@ import { useScrollVideo } from '../hooks/useScrollVideo';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { Logo } from './Logo';
 import { Picture } from './Picture';
+import { imagemAntiga } from '../data/montarProjetos';
 
 /**
  * Home: o vídeo do fundo anda junto com o scroll (ver useScrollVideo).
@@ -64,7 +65,7 @@ export function Hero() {
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-bg">
         <Picture
-          id={site.hero.poster}
+          imagem={imagemAntiga(site.hero.poster)}
           alt=""
           sizes="100vw"
           priority

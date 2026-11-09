@@ -74,11 +74,21 @@ export async function settle(page: Page): Promise<void> {
     .toBe(true);
 }
 
+/** Texto exato (sem casar "Casamento" com "Pedido de Casamento"). */
+export function exato(texto: string): RegExp {
+  return new RegExp(`^${texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+}
+
 /** O slide (grupo) de um projeto. */
 export function slideOf(page: Page, title: string) {
   return page
     .locator('[aria-roledescription="slide"]')
-    .filter({ has: page.locator('h3', { hasText: title }) });
+    .filter({ has: page.locator('h3', { hasText: exato(title) }) });
+}
+
+/** Quantos <video> estão tocando agora (o hero só anda com o scroll, nunca "toca"). */
+export function videosTocando(page: Page): Promise<number> {
+  return page.evaluate(() => [...document.querySelectorAll('video')].filter((v) => !v.paused).length);
 }
 
 /** Vai até um projeto no slider pela miniatura e espera ele ficar ativo (sem inert). */
@@ -86,7 +96,7 @@ export async function goToProject(page: Page, title: string): Promise<void> {
   await page.evaluate(() => document.getElementById('projetos')?.scrollIntoView({ behavior: 'instant' }));
   await page
     .getByRole('list', { name: 'Miniaturas dos projetos' })
-    .getByRole('button', { name: title })
+    .getByRole('button', { name: title, exact: true })
     .click();
   await expect(slideOf(page, title)).not.toHaveAttribute('inert', '');
 }

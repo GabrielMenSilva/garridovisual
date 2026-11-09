@@ -1,9 +1,9 @@
-import type { Project } from '../data/projects';
+import type { Projeto } from '../data/projects';
 import { GridIcon } from './Icons';
 import { VideoPlayer } from './VideoPlayer';
 
 interface ProjectSlideProps {
-  project: Project;
+  project: Projeto;
   index: number;
   total: number;
   active: boolean;
@@ -33,32 +33,31 @@ export function ProjectSlide({
         aria-labelledby={`projeto-${project.slug}`}
         className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-14"
       >
+        {/* o slide 1 fica abaixo da dobra (o hero tem 280svh): o poster carrega preguiçoso */}
         <VideoPlayer
-          title={project.title}
-          video={project.video}
-          cover={project.cover}
-          coverAlt={project.coverAlt}
-          coverFocus={project.coverFocus}
+          titulo={project.titulo}
+          video={project.videoPrincipal}
+          capa={project.capa}
+          capaAlt={project.capaAlt}
+          capaFoco={project.capaFoco}
           playing={playing && active}
           onPlay={onPlay}
-          // o slide 1 fica abaixo da dobra (o hero tem 280svh): carregamento preguiçoso também
-          priority={false}
         />
         <div>
-          <ul className="flex flex-wrap gap-2" aria-label="Funções">
-            {project.roles.map((role) => (
-              <li key={role} className="chip">
-                {role}
-              </li>
-            ))}
-          </ul>
-          <h3
-            id={`projeto-${project.slug}`}
-            className="mt-5 text-[clamp(1.9rem,1.1rem+2.4vw,3.25rem)] text-ink"
-          >
-            {project.title}
+          {project.funcoes.length > 0 && (
+            <ul className="mb-5 flex flex-wrap gap-2" aria-label="Funções">
+              {project.funcoes.map((funcao) => (
+                <li key={funcao} className="chip">
+                  {funcao}
+                </li>
+              ))}
+            </ul>
+          )}
+          <h3 id={`projeto-${project.slug}`} className="text-[clamp(1.9rem,1.1rem+2.4vw,3.25rem)] text-ink">
+            {project.titulo}
           </h3>
-          <p className="mt-5 max-w-prose text-[length:var(--text-lead)] text-muted">{project.summary}</p>
+          <p className="mt-5 max-w-prose text-[length:var(--text-lead)] text-muted">{project.resumo}</p>
+          {project.descricao && <p className="mt-4 max-w-prose text-muted">{project.descricao}</p>}
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
             <button
               type="button"
@@ -68,16 +67,16 @@ export function ProjectSlide({
             >
               <GridIcon className="size-5" />
               Ver galeria
-              <span className="sr-only"> de {project.title}</span>
+              <span className="sr-only"> de {project.titulo}</span>
             </button>
-            {project.link && (
+            {project.linkExterno && (
               <a
-                href={project.link.href}
+                href={project.linkExterno.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 items-center text-sm font-semibold text-gold underline decoration-gold-deep underline-offset-4 hover:text-gold-light"
               >
-                {project.link.label}
+                {project.linkExterno.rotulo}
                 <span className="sr-only"> (abre em nova aba)</span>
               </a>
             )}

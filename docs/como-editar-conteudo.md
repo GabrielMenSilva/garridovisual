@@ -1,14 +1,17 @@
 # Como editar o conteúdo do site
 
-Quase tudo o que aparece no site vem de três arquivos em `src/data/`:
+O conteúdo vem de dois lugares:
 
-| Arquivo | O que tem |
-|---|---|
-| `src/data/projects.ts` | Os projetos (ordem, texto, funções, capa, vídeo, galeria) |
-| `src/data/contact.ts` | Instagram, WhatsApp e e-mail (o e-mail está escondido) |
-| `src/data/site.ts` | Nome, função, vídeo do hero |
+| Onde                                                         | O que tem                                                                       | Quem mexe                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Pasta **`videos e fotos`** (na raiz do projeto, fora do Git) | Os vídeos e fotos originais do Garrido                                          | O Garrido solta os arquivos; **nada é apagado ou renomeado lá** |
+| `src/data/projects.ts`                                       | O **texto** dos projetos: título, funções, resumo, ordem, vídeo principal, link | À mão                                                           |
+| `src/data/media.generated.ts`                                | A **mídia** já convertida, ligada a cada projeto pelo `slug`                    | Gerado por `pnpm media:import` (não edite)                      |
+| `scripts/midia-ajustes.json`                                 | Ajustes por arquivo: mudar de projeto, girar vídeo deitado                      | À mão, raramente                                                |
+| `src/data/contact.ts`                                        | Instagram, WhatsApp e e-mail (o e-mail está escondido)                          | À mão                                                           |
+| `src/data/site.ts`                                           | Nome, função, vídeo do hero                                                     | À mão                                                           |
 
-Os dados dos projetos são conferidos com **zod** quando o site é montado. Se algo estiver errado (ID de vídeo inválido, imagem que não existe), o `pnpm build` falha e diz o motivo. Depois de editar, rode:
+Tudo é conferido com **zod** no build: se faltar um vídeo, um poster ou uma foto em `public/`, ou se um ID de YouTube estiver errado, o `pnpm build` falha e diz o motivo. Depois de editar, rode:
 
 ```bash
 pnpm test
@@ -18,55 +21,104 @@ pnpm test
 pnpm build
 ```
 
-## Pôr o vídeo principal de um projeto
+No PowerShell, se o `pnpm` for bloqueado, use `pnpm.cmd`.
 
-Em `src/data/projects.ts`, troque o `video: null` do projeto por uma das formas abaixo.
+## Adicionar fotos e vídeos (o jeito normal)
 
-**YouTube** (o ID tem 11 caracteres; em `https://www.youtube.com/watch?v=dQw4w9WgXcQ` é `dQw4w9WgXcQ`):
+1. Na pasta `videos e fotos`, crie **uma pasta por projeto** (ex.: `Clínica X/`) e solte os vídeos e fotos dentro. Pode ter subpastas (`fotos/`, `videos/`, `fotos vertical/`…). Um arquivo solto na raiz também vira projeto, com o nome do arquivo.
+2. Rode:
 
-```ts
-video: { type: 'youtube', id: 'dQw4w9WgXcQ' },
+```bash
+pnpm media:import
 ```
 
-**Vimeo** (o número da URL; em vídeo não listado, o `hash` que vem depois da barra):
+O script converte só o que é novo ou mudou (vídeo em H.264 com som, até 1080p; fotos em AVIF/WebP; tudo **sem GPS nem dados do celular**), gera os posters e atualiza `src/data/media.generated.ts`. No fim ele mostra quanto ocupou e avisa se algo passou do limite. Opções:
 
-```ts
-video: { type: 'vimeo', id: '123456789' },
-// não listado: https://vimeo.com/123456789/abcdef1234
-video: { type: 'vimeo', id: '123456789', hash: 'abcdef1234' },
+```bash
+pnpm media:import --dry-run
 ```
 
-**Arquivo próprio** (`.mp4` ou `.webm` em `public/media/`):
-
-```ts
-video: { type: 'file', src: '/media/hey-maringa.mp4' },
+```bash
+pnpm media:import --force
 ```
 
-O YouTube sempre carrega pelo domínio sem cookies (`youtube-nocookie.com`) e o Vimeo com `dnt=1`. Os dois só carregam **depois que a pessoa clica** no play. Sem vídeo, o slide mostra a capa com o selo "Vídeo em breve".
+(`--dry-run` só mostra o que faria; `--force` reconverte tudo.)
 
-## Pôr fotos e vídeos na galeria de um projeto
+3. Rode `pnpm build` e confira em `pnpm preview`.
 
-1. Copie as fotos originais para `assets-originais/` (ex.: `ody-park-galeria-01.jpg`).
-2. Acrescente o nome do arquivo na lista `USADAS` de `scripts/otimizar-imagens.mjs`.
-3. Rode `pnpm assets:optimize` (gera AVIF/WebP em `public/images/` e atualiza `src/data/imagens.generated.ts`).
-4. Em `src/data/projects.ts`, preencha a `gallery` do projeto:
+Nomes que o script entende:
+
+- **Pasta de projeto que já existe no site**: `Hey Maringá`, `hey_maringa`, `HEYMARINGA` → projeto `hey-maringa` (sem acento, sem maiúscula, sem espaço).
+- **Ordem dos arquivos**: pelo número no começo do nome (`1.mp4`, `2.mp4`, `10.mp4`), depois o resto em ordem alfabética.
+- **Vídeo principal**: o que tiver `principal`, `main`, `destaque` ou `capa` no nome; senão o de menor número; senão o primeiro.
+- **Ordem dos projetos**: os do `projects.ts` primeiro; os novos no fim. Pasta com número na frente (`03-Clínica X`) vai para essa posição.
+- **Texto do projeto novo**: um `.txt` dentro da pasta é lido assim: 1ª linha = título, resto = descrição; linhas `funcoes: Filmmaker, Editor` e `youtube: <ID>` também valem.
+
+## Projeto novo: escrever o texto
+
+Um projeto novo aparece no site com um **rascunho neutro** ("Vídeos e imagens do projeto X.") até ganhar texto. Para escrever, copie um bloco no fim de `textos` em `src/data/projects.ts`:
 
 ```ts
-gallery: [
-  { kind: 'image', image: 'ody-park-galeria-01', alt: 'Ody Park, foto 1 de 3' },
-  { kind: 'video', video: { type: 'youtube', id: 'dQw4w9WgXcQ' }, title: 'Campanha de verão' },
-],
+{
+  slug: 'clinica-x',            // o mesmo que o import mostrou (nome da pasta em slug)
+  titulo: 'Clínica X',
+  funcoes: ['Filmmaker', 'Editor'], // [] esconde os chips
+  resumo: 'Uma a três frases sobre o trabalho.',
+},
 ```
 
-O `alt` descreve a imagem para quem usa leitor de tela. Sem `gallery`, o botão "Ver galeria" mostra a capa e o vídeo principal.
+A posição no array é a posição no slider.
 
-## Adicionar um projeto novo
+## Trocar o vídeo principal
 
-Copie um bloco de projeto em `rawProjects` (em `src/data/projects.ts`) e troque os campos. A ordem do array é a ordem do slider. O teste `src/data/projects.test.ts` espera 6 projetos numa ordem fixa: ao adicionar ou reordenar, atualize a lista do teste também.
+Em `src/data/projects.ts`, no projeto, use o nome do arquivo **no site** (aparece no fim do `pnpm media:import` e em `src/data/media.generated.ts`, campo `arquivo`):
 
-## Trocar a capa ou o ponto de foco
+```ts
+videoPrincipal: '02-video.mp4',
+```
 
-`cover` é o nome do arquivo sem extensão (veja `src/data/imagens.generated.ts`). Se a capa for vertical e cortar mal no 16:9, ajuste `coverFocus` (CSS `object-position`, ex.: `'50% 30%'` sobe o enquadramento).
+`videoPrincipal: null` tira o vídeo (mostra "Vídeo em breve").
+
+## Usar YouTube ou Vimeo no lugar do arquivo
+
+Vídeos que passam de **24 MB** mesmo em 720p não entram no site (o limite comum de hospedagem estática é 25 MB por arquivo). O import avisa "PRECISA HOSPEDAR FORA" e o site mostra só o poster com "Vídeo em breve". Para ligar:
+
+1. Suba o vídeo no YouTube (não listado) ou no Vimeo.
+2. Em `src/data/projects.ts`, no projeto:
+
+```ts
+videoPrincipal: { tipo: 'youtube', id: 'dQw4w9WgXcQ' },
+```
+
+```ts
+videoPrincipal: { tipo: 'vimeo', id: '123456789', hash: 'abcdef1234' },
+```
+
+(o ID do YouTube tem 11 caracteres: em `youtube.com/watch?v=dQw4w9WgXcQ` é `dQw4w9WgXcQ`; no Vimeo é o número da URL, e o `hash` vem depois da barra nos não listados.)
+
+O YouTube carrega pelo domínio sem cookies (`youtube-nocookie.com`) e o Vimeo com `dnt=1`, e os dois só depois do clique no play.
+
+## Vídeo no projeto errado ou deitado
+
+Em `scripts/midia-ajustes.json`, pelo caminho do arquivo dentro de `videos e fotos`:
+
+```json
+"casamento/casamento.mp4": { "projeto": "juliana-e-marcio", "girar": 270 }
+```
+
+`girar` é em graus no sentido horário (90, 180 ou 270). Depois, `pnpm media:import`.
+
+## Capa e ponto de foco
+
+Sem `capa`, a capa é o poster do vídeo principal (ou a 1ª foto). As capas antigas usam `capa: 'hey-maringa-capa'` (veja `src/data/imagens.generated.ts`). Se a capa cortar mal no 16:9, ajuste `capaFoco` (CSS `object-position`, ex.: `'50% 30%'`).
+
+## Texto alternativo das fotos
+
+Por padrão as fotos novas ficam com "{Título} — foto {n}". Para descrever melhor, no projeto em `projects.ts` (a chave é o `arquivo` da foto em `media.generated.ts`):
+
+```ts
+altDasFotos: { '01-foto': 'Noivos no altar, de costas, diante do padre' },
+```
 
 ## Trocar o vídeo do hero
 

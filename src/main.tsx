@@ -7,8 +7,10 @@ import '@fontsource/manrope/latin-500.css';
 import '@fontsource/manrope/latin-600.css';
 import './styles/global.css';
 import App from './App';
+import { instalarUmVideoPorVez } from './lib/umVideoPorVez';
 
 document.documentElement.classList.add('js');
+instalarUmVideoPorVez();
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Elemento #root não encontrado');
